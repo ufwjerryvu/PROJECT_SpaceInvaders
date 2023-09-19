@@ -5,13 +5,13 @@ import invaders.rendering.Renderable;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 
-public class EntityViewImpl implements EntityView {
+public class Viewport {
     private Renderable entity;
     private Vector2D position;
     private boolean delete = false;
     private ImageView node;
 
-    public EntityViewImpl(Renderable entity) {
+    public Viewport(Renderable entity) {
         this.entity = entity;
         this.position = entity.getPosition();
         node = new ImageView(entity.getImage());
@@ -28,7 +28,6 @@ public class EntityViewImpl implements EntityView {
         }
     }
 
-    @Override
     public void update(double xViewportOffset, double yViewportOffset) {
         if (!node.getImage().equals(entity.getImage())) {
             node.setImage(entity.getImage());
@@ -41,22 +40,18 @@ public class EntityViewImpl implements EntityView {
         delete = false;
     }
 
-    @Override
     public boolean matchesEntity(Renderable entity) {
         return this.entity.equals(entity);
     }
 
-    @Override
     public void markForDelete() {
         delete = true;
     }
 
-    @Override
     public Node getNode() {
         return node;
     }
 
-    @Override
     public boolean isMarkedForDelete() {
         return delete;
     }

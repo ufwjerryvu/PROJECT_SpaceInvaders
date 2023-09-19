@@ -1,26 +1,24 @@
 package invaders.engine;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
-import invaders.entities.EntityViewImpl;
-import invaders.entities.SpaceBackground;
-import javafx.util.Duration;
+import invaders.entities.*;
+import invaders.rendering.*;
 
-import invaders.entities.EntityView;
-import invaders.rendering.Renderable;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.util.*;
+import javafx.animation.*;
+import javafx.scene.*;
+import javafx.scene.layout.*;
 
 public class GameWindow {
 	private final int width;
     private final int height;
+
 	private Scene scene;
     private Pane pane;
     private GameEngine model;
-    private List<EntityView> entityViews;
+
+    private List<Viewport> viewports;
     private Renderable background;
 
     private double xViewportOffset = 0.0;
@@ -28,23 +26,32 @@ public class GameWindow {
     private static final double VIEWPORT_MARGIN = 280.0;
 
 	public GameWindow(GameEngine model, int width, int height){
+        /*
+        NOTE: 
+            - Just initializing things and storing information.
+         */
 		this.width = width;
         this.height = height;
         this.model = model;
+
         pane = new Pane();
         scene = new Scene(pane, width, height);
         this.background = new SpaceBackground(model, pane);
 
-        KeyboardInputHandler keyboardInputHandler = new KeyboardInputHandler(this.model);
+        GameInput sprites = new GameInput(this.model);
 
-        scene.setOnKeyPressed(keyboardInputHandler::handlePressed);
-        scene.setOnKeyReleased(keyboardInputHandler::handleReleased);
+        scene.setOnKeyPressed(sprites::handlePressed);
+        scene.setOnKeyReleased(sprites::handleReleased);
 
-        entityViews = new ArrayList<EntityView>();
+        viewports = new ArrayList<Viewport>();
 
     }
 
 	public void run() {
+        /*
+        NOTE:
+            - This is called the the master class App.java.
+        */
          Timeline timeline = new Timeline(new KeyFrame(Duration.millis(17), t -> this.draw()));
 
          timeline.setCycleCount(Timeline.INDEFINITE);
@@ -54,29 +61,58 @@ public class GameWindow {
     private void draw(){
         model.update();
 
+        /*
+        NOTE:
+            - Draws all the renderables in the game engine model.
+         */
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {
             boolean notFound = true;
-            for (EntityView view : entityViews) {
+            /*
+            NOTE:
+                - We are going through all the viewports to see if the renderable
+                entity (sprite) stored in the viewport matches the entity in the
+                list of renderable entities.
+             */
+            for (Viewport view : viewports) {
                 if (view.matchesEntity(entity)) {
+                    /*
+                    NOTE:
+                        - If found, we update the viewport. That is, we update the
+                        new coordinates of the viewports. 
+                     */
                     notFound = false;
                     view.update(xViewportOffset, yViewportOffset);
                     break;
                 }
             }
             if (notFound) {
-                EntityView entityView = new EntityViewImpl(entity);
-                entityViews.add(entityView);
-                pane.getChildren().add(entityView.getNode());
+                /*
+                NOTE:  
+                    - If not found then we initialize a new viewport with the entity
+                    (sprite) and add that to our list of viewports. 
+
+                    - I don't know what `pane.getChildren().add(viewport.getNode())`
+                    does. I'm assuming it has something to do with trees.
+                 */
+                Viewport viewport = new Viewport(entity);
+                viewports.add(viewport);
+                pane.getChildren().add(viewport.getNode());
             }
         }
 
-        for (EntityView entityView : entityViews) {
-            if (entityView.isMarkedForDelete()) {
-                pane.getChildren().remove(entityView.getNode());
+        for (Viewport viewport : viewports) {
+            /*
+            NOTE:
+                - If the viewport is marked for delete then we delete the entity
+                from `pane`. This is probably useful for when we need to remove an
+                enemy when it's shot. 
+             */
+            if (viewport.isMarkedForDelete()) {
+                pane.getChildren().remove(viewport.getNode());
             }
         }
-        entityViews.removeIf(EntityView::isMarkedForDelete);
+        viewports.removeIf(Viewport::isMarkedForDelete);
     }
 
 	public Scene getScene() {

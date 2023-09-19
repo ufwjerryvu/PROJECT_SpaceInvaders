@@ -1,20 +1,18 @@
 package invaders.engine;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import invaders.GameObject;
-import invaders.entities.Player;
-import invaders.physics.Moveable;
+import invaders.Sprite;
+import invaders.entities.*;
 import invaders.physics.Vector2D;
-import invaders.rendering.Renderable;
+import invaders.rendering.*;
 
-/**
- * This class manages the main loop and logic of the game
- */
 public class GameEngine {
-
-	private List<GameObject> gameobjects;
+	/*
+	NOTE:
+		- This class manages the main loop and logic of the game.
+	*/
+	private List<Sprite> sprites;
 	private List<Renderable> renderables;
 	private Player player;
 
@@ -22,24 +20,35 @@ public class GameEngine {
 	private boolean right;
 
 	public GameEngine(String config){
-		// read the config here
-		gameobjects = new ArrayList<GameObject>();
+		/*
+		NOTE:
+			- Read the config in here.
+		 */
+		sprites = new ArrayList<Sprite>();
 		renderables = new ArrayList<Renderable>();
 
 		player = new Player(new Vector2D(200, 380));
 		renderables.add(player);
 	}
 
-	/**
-	 * Updates the game/simulation
-	 */
 	public void update(){
+		/*
+		NOTE: 
+			- Updates the game with every frame.
+		*/
+
 		movePlayer();
-		for(GameObject go: gameobjects){
-			go.update();
+		for(Sprite sprite: sprites){
+			sprite.update();
 		}
 
-		// ensure that renderable foreground objects don't go off-screen
+		/*
+		NOTE:
+			- Ensuring that the renderable foreground sprites don't go 
+			off-screen. 
+
+			- `ro` might stand for "renderable objects". 
+		*/
 		for(Renderable ro: renderables){
 			if(!ro.getLayer().equals(Renderable.Layer.FOREGROUND)){
 				continue;
@@ -65,7 +74,6 @@ public class GameEngine {
 	public List<Renderable> getRenderables(){
 		return renderables;
 	}
-
 
 	public void leftReleased() {
 		this.left = false;

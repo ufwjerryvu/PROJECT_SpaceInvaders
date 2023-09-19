@@ -1,28 +1,28 @@
 package invaders.engine;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javafx.scene.input.*;
+import javafx.scene.media.*;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.*;
+import java.util.*;
 
-class KeyboardInputHandler {
+class GameInput {
     private final GameEngine model;
+
     private boolean left = false;
     private boolean right = false;
+
     private Set<KeyCode> pressedKeys = new HashSet<>();
 
     private Map<String, MediaPlayer> sounds = new HashMap<>();
 
-    KeyboardInputHandler(GameEngine model) {
+    public GameInput(GameEngine model) {
         this.model = model;
 
-        // TODO (longGoneUser): Is there a better place for this code?
+        /*
+        NOTE:
+            - Is there a better place for this code?
+        */
         URL mediaUrl = getClass().getResource("/shoot.wav");
         String jumpURL = mediaUrl.toExternalForm();
 
@@ -31,12 +31,20 @@ class KeyboardInputHandler {
         sounds.put("shoot", mediaPlayer);
     }
 
-    void handlePressed(KeyEvent keyEvent) {
+    public void handlePressed(KeyEvent keyEvent) {
+        /*
+        NOTE:
+            - What happens when we pressed a certain key?
+         */
         if (pressedKeys.contains(keyEvent.getCode())) {
             return;
         }
         pressedKeys.add(keyEvent.getCode());
 
+        /*
+        NOTE:
+            - In this case, if we should, the shoot sound gets played.
+         */
         if (keyEvent.getCode().equals(KeyCode.SPACE)) {
             if (model.shootPressed()) {
                 MediaPlayer shoot = sounds.get("shoot");
@@ -45,6 +53,11 @@ class KeyboardInputHandler {
             }
         }
 
+        /*
+        NOTE:
+            - In this case, if it is the left or right keys then the left
+            and right booleans are set accordingly.
+        */
         if (keyEvent.getCode().equals(KeyCode.LEFT)) {
             left = true;
         }
@@ -52,6 +65,12 @@ class KeyboardInputHandler {
             right = true;
         }
 
+        /*
+        NOTE:
+            - Calling the `GameEngine` model. If left is pressed the `leftPressed()`
+            is called where it moves the player to the left. Similarly, if the right
+            arrow key is pressed then the player gets moved to the right.
+         */
         if (left) {
             model.leftPressed();
         }
@@ -61,7 +80,15 @@ class KeyboardInputHandler {
         }
     }
 
-    void handleReleased(KeyEvent keyEvent) {
+    public void handleReleased(KeyEvent keyEvent) {
+        /*
+        NOTE:
+            - This is what is called when the player releases a key.
+
+            - We remove the key that's being stored in the hash map first and
+            then we check if the key that was released is equivalent to the left
+            or the right arrow key. 
+        */
         pressedKeys.remove(keyEvent.getCode());
 
         if (keyEvent.getCode().equals(KeyCode.LEFT)) {
