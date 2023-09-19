@@ -1,14 +1,14 @@
 package invaders.entities;
 
-import invaders.engine.GameEngine;
-import invaders.physics.Vector2D;
-import invaders.rendering.Renderable;
+import invaders.engine.*;
+import invaders.physics.*;
+import invaders.rendering.*;
 
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.Node;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
+import javafx.scene.*;
 
 public class SpaceBackground implements Renderable {
 	private Rectangle space;
@@ -25,27 +25,17 @@ public class SpaceBackground implements Renderable {
 		pane.getChildren().add(space);
 	}
 
-	public Image getImage() {
-		return null;
-	}
+	public Image getImage() { return null;}
 
 	@Override
-	public double getWidth() {
-		return 0;
-	}
+	public double getWidth() { return 0;}
 
 	@Override
-	public double getHeight() {
-		return 0;
-	}
+	public double getHeight() { return 0;}
 
 	@Override
-	public Vector2D getPosition() {
-		return null;
-	}
+	public Coordinates getPosition() { return null;}
 
 	@Override
-	public Layer getLayer() {
-		return Layer.BACKGROUND;
-	}
+	public Layer getLayer() { return Layer.BACKGROUND;}
 }

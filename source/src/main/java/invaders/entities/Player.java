@@ -1,18 +1,15 @@
 package invaders.entities;
 
-import invaders.logic.Damagable;
-import invaders.physics.Moveable;
-import invaders.physics.Vector2D;
-import invaders.rendering.Animator;
-import invaders.rendering.Renderable;
+import invaders.logic.*;
+import invaders.physics.*;
+import invaders.rendering.*;
 
-import javafx.scene.image.Image;
+import javafx.scene.image.*;
 
-import java.io.File;
+import java.io.*;
 
 public class Player implements Moveable, Damagable, Renderable {
-
-    private final Vector2D position;
+    private final Coordinates position;
     private final Animator anim = null;
     private double health = 100;
 
@@ -20,8 +17,12 @@ public class Player implements Moveable, Damagable, Renderable {
     private final double height = 30;
     private final Image image;
 
-    public Player(Vector2D position){
-        this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), width, height, true, true);
+    public Player(Coordinates position){
+        /*
+        
+         */
+        this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), 
+            width, height, true, true);
         this.position = position;
     }
 
@@ -80,7 +81,7 @@ public class Player implements Moveable, Damagable, Renderable {
     }
 
     @Override
-    public Vector2D getPosition() {
+    public Coordinates getPosition() {
         return position;
     }
 

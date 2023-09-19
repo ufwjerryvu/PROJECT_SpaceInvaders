@@ -4,9 +4,9 @@ public class BoxCollider implements Collider {
 
     private double width;
     private double height;
-    private Vector2D position;
+    private Coordinates position;
 
-    public BoxCollider(double width, double height, Vector2D position){
+    public BoxCollider(double width, double height, Coordinates position){
         this.height = height;
         this.width = width;
         this.position = position;
@@ -23,7 +23,7 @@ public class BoxCollider implements Collider {
     }
 
     @Override
-    public Vector2D getPosition(){
+    public Coordinates getPosition(){
         return this.position;
     }
 }

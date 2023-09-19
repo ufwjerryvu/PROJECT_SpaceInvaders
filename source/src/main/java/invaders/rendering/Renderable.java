@@ -1,15 +1,12 @@
 package invaders.rendering;
 
-import invaders.Sprite;
-import invaders.physics.Vector2D;
-import invaders.engine.GameEngine;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import invaders.*;
+import invaders.physics.*;
+import invaders.engine.*;
+import javafx.scene.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
 
-/**
- * Represents something that can be rendered
- */
 public interface Renderable {
 
     public Image getImage();
@@ -17,13 +14,14 @@ public interface Renderable {
     public double getWidth();
     public double getHeight();
 
-    public Vector2D getPosition();
+    public Coordinates getPosition();
 
     public Renderable.Layer getLayer();
 
-    /**
-     * The set of available layers
-     */
+    /*
+    NOTE:
+        - Setting the different layers.
+    */
     public static enum Layer {
         BACKGROUND, FOREGROUND, EFFECT
     }

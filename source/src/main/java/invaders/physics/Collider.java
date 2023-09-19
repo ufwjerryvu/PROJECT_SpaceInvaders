@@ -6,7 +6,7 @@ public interface Collider {
 
     public double getHeight();
 
-    public Vector2D getPosition();
+    public Coordinates getPosition();
 
     public default boolean isColliding(Collider col) {
         double minX1 = this.getPosition().getX();

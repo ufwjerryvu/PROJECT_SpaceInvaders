@@ -1,6 +1,6 @@
 package invaders.rendering;
 
-import java.util.List;
+import java.util.*;
 
 public class Animator {
 	private final List<Animation> animations;

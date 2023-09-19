@@ -4,7 +4,7 @@ import java.util.*;
 
 import invaders.Sprite;
 import invaders.entities.*;
-import invaders.physics.Vector2D;
+import invaders.physics.Coordinates;
 import invaders.rendering.*;
 
 public class GameEngine {
@@ -27,7 +27,7 @@ public class GameEngine {
 		sprites = new ArrayList<Sprite>();
 		renderables = new ArrayList<Renderable>();
 
-		player = new Player(new Vector2D(200, 380));
+		player = new Player(new Coordinates(200, 380));
 		renderables.add(player);
 	}
 
