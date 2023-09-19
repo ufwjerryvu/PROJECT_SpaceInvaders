@@ -1,2 +1,2 @@
-# ASSIGNMENT_SpaceInvaders
-SOFT2201 Assignment
+# Space Invaders
+## SOFT2201 Assignment 2
