@@ -19,8 +19,12 @@ public class Player implements Moveable, Damagable, Renderable {
 
     public Player(Coordinates position){
         /*
-        
-         */
+        NOTE:
+            - Setting the image for the player. The image is a fixed relative 
+            path. 
+
+            - The position of the player is also stored.
+        */
         this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), 
             width, height, true, true);
         this.position = position;
@@ -43,26 +47,41 @@ public class Player implements Moveable, Damagable, Renderable {
 
     @Override
     public void up() {
+        /*
+        NOTE:
+            - The player can only move left or right so this is overridden and
+            the function just does nothing.
+        */
         return;
     }
 
     @Override
     public void down() {
+        /*
+        NOTE:
+            - The player can only move left or right so the function just
+            basically does nothing.
+        */
         return;
     }
 
     @Override
     public void left() {
-        this.position.setX(this.position.getX() - 1);
+        final int NUMBER_OF_PIXELS = 1;
+        this.position.setX(this.position.getX() - NUMBER_OF_PIXELS);
     }
 
     @Override
     public void right() {
-        this.position.setX(this.position.getX() + 1);
+        final int NUMBER_OF_PIXELS = 1;
+        this.position.setX(this.position.getX() + NUMBER_OF_PIXELS);
     }
 
     public void shoot(){
-        // todo
+        /*
+        NOTE:
+            - (TO-DO) We need to implement this function
+        */
     }
 
     @Override

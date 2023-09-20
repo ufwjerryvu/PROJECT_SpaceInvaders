@@ -9,24 +9,44 @@ public interface Collider {
     public Coordinates getPosition();
 
     public default boolean isColliding(Collider col) {
-        double minX1 = this.getPosition().getX();
-        double maxX1 = this.getPosition().getX() + this.getWidth();
-        double minY1 = this.getPosition().getY();
-        double maxY1 = this.getPosition().getY() + this.getHeight();
+        /*
+        NOTE:
+            - Getting the coordinates of the first object.
+         */
+        double oneLeftX = this.getPosition().getX();
+        double oneRightX = this.getPosition().getX() + this.getWidth();
+        double oneTopY = this.getPosition().getY();
+        double oneBottomY = this.getPosition().getY() + this.getHeight();
 
-        double minX2 = col.getPosition().getX();
-        double maxX2 = col.getPosition().getX() + col.getWidth();
-        double minY2 = col.getPosition().getY();
-        double maxY2 = col.getPosition().getY() + col.getHeight();
+        /*
+        NOTE:
+            - Then getting the coordinates of the second object.
+         */
+        double twoLeftX = col.getPosition().getX();
+        double twoRightX = col.getPosition().getX() + col.getWidth();
+        double twoTopY = col.getPosition().getY();
+        double twoBottomY = col.getPosition().getY() + col.getHeight();
 
-        if (maxX1 < minX2 || maxX2 < minX1) {
-            return false; // No overlap in the x-axis
+        if (oneRightX < twoLeftX || twoRightX < oneLeftX) {
+            /*
+            NOTE:
+                - Checking if there is any overlap in the x-axis.
+             */
+            return false;
         }
 
-        if (maxY1 < minY2 || maxY2 < minY1) {
-            return false; // No overlap in the y-axis
+        if (oneBottomY < twoTopY || twoBottomY < oneTopY) {
+            /*
+            NOTE:
+                - Checking if there is any overlap in the y-axis
+             */
+            return false; 
         }
 
-        return true; // Overlap in both x-axis and y-axis
+        /*
+        NOTE:
+            - There is an overlap in both the x- and y-axes. 
+         */
+        return true;
     }
 }

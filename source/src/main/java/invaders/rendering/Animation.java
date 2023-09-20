@@ -1,6 +1,6 @@
 package invaders.rendering;
 
-import javafx.scene.image.Image;
+import javafx.scene.image.*;
 
 public interface Animation {
     public String getName();
