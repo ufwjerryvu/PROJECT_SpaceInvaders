@@ -53,6 +53,12 @@ public class GameEngine {
 			if(!ro.getLayer().equals(Renderable.Layer.FOREGROUND)){
 				continue;
 			}
+
+			/*
+			NOTE:
+				- What are all these magic numbers? I thought good design
+				was being preached here?
+			 */
 			if(ro.getPosition().getX() + ro.getWidth() >= 640) {
 				ro.getPosition().setX(639-ro.getWidth());
 			}
@@ -75,6 +81,10 @@ public class GameEngine {
 		return renderables;
 	}
 
+	/*
+	NOTE:
+		- Mutators for released and pressed buttons.
+	*/
 	public void leftReleased() {
 		this.left = false;
 	}

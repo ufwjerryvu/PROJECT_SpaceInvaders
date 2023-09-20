@@ -7,8 +7,13 @@ public class Animator {
 	private Animation state;
 
 	public Animator(List<Animation> animations){
+		/*
+		NOTE:
+			- If we don't find anything in the animations list then
+			we throw an exception. 
+		 */
 		if(animations.isEmpty()){
-			throw new IllegalArgumentException("Animations list must contain at least 1 animation!");
+			throw new IllegalArgumentException("Error: no animations in the animations list.");
 		}
 		
 		this.animations = animations;
@@ -16,6 +21,10 @@ public class Animator {
 	}
 
 	public void setState(String name){
+		/*
+		NOTE:
+			- Just setting the next animation frame in the animation list.
+		*/
 		this.state = animations.stream().filter(a -> a.getName().equals(name)).findFirst().orElse(animations.get(0));
 	}
 
