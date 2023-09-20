@@ -7,6 +7,6 @@ import org.json.simple.parser.*;
 
 public interface WindowConfigReader {
     public JSONObject getWindowConfig();
-    public int getWindowWidth();
-    public int getWindowHeight();
+    public Long getWindowWidth();
+    public Long getWindowHeight();
 }

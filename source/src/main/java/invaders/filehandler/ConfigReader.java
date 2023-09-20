@@ -3,12 +3,13 @@ package invaders.filehandler;
 import invaders.physics.*;
 
 import java.io.*;
+import java.util.*;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
 public class ConfigReader implements PlayerConfigReader,
-     WindowConfigReader{
+     WindowConfigReader, BunkersConfigReader, EnemiesConfigReader{
     /*
     NOTE:
         - The purpose of this class is to read in the game configurations in the
@@ -19,6 +20,7 @@ public class ConfigReader implements PlayerConfigReader,
     private JSONObject object;
 
     public ConfigReader(String path){
+        this.path = path;
         this.parseAll(path);
     }
 
@@ -51,24 +53,24 @@ public class ConfigReader implements PlayerConfigReader,
         return (JSONObject) this.object.get("Game");
     }
 
-    public int getWindowWidth(){
+    public Long getWindowWidth(){
         /*
         NOTE:
             - Returns the width of the window.
         */
         JSONObject window = this.getWindowConfig();
-        int windowWidth = (int)((JSONObject) window.get("size")).get("x");
+        Long windowWidth = (Long)((JSONObject) window.get("size")).get("x");
 
         return windowWidth;
     }
 
-    public int getWindowHeight(){
+    public Long getWindowHeight(){
         /*
         NOTE:
             - Returns the height of the window.
         */
         JSONObject window = this.getWindowConfig();
-        int windowHeight = (int)((JSONObject) window.get("size")).get("y");
+        Long windowHeight = (Long)((JSONObject) window.get("size")).get("y");
 
         return windowHeight;
     }
@@ -93,26 +95,26 @@ public class ConfigReader implements PlayerConfigReader,
         return playerColour;
     }
 
-    public int getPlayerSpeed(){
+    public Long getPlayerSpeed(){
         /*
         NOTE:
             - Returns the speed of the player
          */
 
         JSONObject player = this.getPlayerConfig();
-        int playerSpeed = (int)((JSONObject) player).get("speed");
+        Long playerSpeed = (Long)((JSONObject) player).get("speed");
 
         return playerSpeed;
     }
 
-    public int getPlayerLives(){
+    public Long getPlayerLives(){
         /*
         NOTE:
             - Returns the player's number of lives.
          */
 
         JSONObject player = this.getPlayerConfig();
-        int playerLives = (int)((JSONObject) player).get("lives");
+        Long playerLives = (Long)((JSONObject) player).get("lives");
 
         return playerLives;
     }
@@ -123,9 +125,92 @@ public class ConfigReader implements PlayerConfigReader,
             - Returns the player's starting coordinates.
         */
         JSONObject player = this.getPlayerConfig();
-        double playerStartX = (double)((JSONObject) player.get("position")).get("x");
-        double playerStartY = (double)((JSONObject) player.get("position")).get("y");
+        Long playerStartX = (Long)((JSONObject) player.get("position")).get("x");
+        Long playerStartY = (Long)((JSONObject) player.get("position")).get("y");
 
         return new Coordinates(playerStartX, playerStartY);
+    }
+
+    public ArrayList<JSONObject> getAllBunkerConfigs(){
+        /*
+        NOTE:
+            - This returns a list of all the bunker objects in
+            the JSON file. 
+        */
+        ArrayList<JSONObject> rlist = new ArrayList<JSONObject>();
+
+        JSONArray enemies = (JSONArray) this.object.get("Bunkers");
+
+        for(Object enemy: enemies){
+            rlist.add((JSONObject) enemy);
+        }
+
+        return rlist;
+    }
+
+    public Coordinates getBunkerCoordinates(JSONObject bunker){
+        /*
+        NOTE:
+            - Reading the coordinates of a specific bunker object.
+        */
+        Long x = (Long)((JSONObject) bunker.get("position")).get("x");
+        Long y = (Long)((JSONObject) bunker.get("position")).get("y");
+
+        return new Coordinates(x, y);
+    }
+
+    public Long getBunkerWidth(JSONObject bunker){
+        /*
+        NOTE:
+            - Read the width of a specific bunker object.
+        */
+        return (Long)((JSONObject) bunker.get("size")).get("x");
+    }
+
+    public Long getBunkerHeight(JSONObject bunker){
+        /*
+        NOTE:
+            - Read the height of a specific bunker object.
+        */
+        return (Long)((JSONObject) bunker.get("size")).get("y");
+    }
+    
+    public ArrayList<JSONObject> getAllEnemyConfigs(){
+        /*
+        NOTE:
+            - This returns a list of all the enemy objects in
+            the JSON file. 
+        */
+        ArrayList<JSONObject> rlist = new ArrayList<JSONObject>();
+
+        JSONArray enemies = (JSONArray) this.object.get("Enemies");
+
+        for(Object enemy: enemies){
+            rlist.add((JSONObject) enemy);
+        }
+
+        return rlist;
+    }
+
+    public Coordinates getEnemyCoordinates(JSONObject enemy){
+        /*
+        NOTE:
+            - This returns the starting coordinates of an enemy object
+            in the JSON file.
+        */
+
+        Long x = (Long)((JSONObject) enemy.get("position")).get("x");
+        Long y = (Long)((JSONObject) enemy.get("position")).get("y");
+
+        return new Coordinates(x, y);
+    }
+
+    public String getEnemyShootingStrategy(JSONObject enemy){
+        /*
+        NOTE:
+            - Gets the shooting strategy of the enemy. Two possible
+            values as of now is: "slow_straight" and "fast_straight".
+        */
+        return (String) enemy.get("projectile");
     }
 }
