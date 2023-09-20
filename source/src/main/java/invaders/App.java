@@ -6,6 +6,9 @@ import invaders.engine.*;
 
 import java.util.*;
 
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
 public class App extends Application {
 
     public static void main(String[] args) {

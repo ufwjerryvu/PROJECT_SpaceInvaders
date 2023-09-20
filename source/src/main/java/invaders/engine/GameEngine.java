@@ -19,11 +19,13 @@ public class GameEngine {
 	private boolean left;
 	private boolean right;
 
-	public GameEngine(String config){
+	public GameEngine(String configPath){
 		/*
 		NOTE:
-			- Read the config in here.
-		 */
+			- We are using the `ConfigReader` to get each configuration specified
+			by the config file.
+		*/
+
 		sprites = new ArrayList<Sprite>();
 		renderables = new ArrayList<Renderable>();
 

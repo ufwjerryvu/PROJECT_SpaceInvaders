@@ -27,5 +27,5 @@ test {
 }
 
 application {
-    mainClass = 'invaders.App'
+    mainClass = 'Main'
 }
