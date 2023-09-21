@@ -2,9 +2,9 @@ package invaders.logic;
 
 public interface Damagable {
 
-	public void takeDamage(double amount);
+	public void takeLives(int lives);
 
-	public double getHealth();
+	public int getLives();
 
 	public boolean isAlive();
 

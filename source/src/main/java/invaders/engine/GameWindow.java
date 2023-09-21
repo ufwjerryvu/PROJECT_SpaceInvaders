@@ -4,6 +4,7 @@ import java.util.*;
 
 import invaders.entities.*;
 import invaders.rendering.*;
+import invaders.filehandler.*;
 
 import javafx.util.*;
 import javafx.animation.*;
@@ -25,15 +26,21 @@ public class GameWindow {
     private double yViewportOffset = 0.0;
     private static final double VIEWPORT_MARGIN = 280.0;
 
-	public GameWindow(GameEngine model, int width, int height){
+	public GameWindow(GameEngine model){
+        /*
+        NOTE:
+            - We get the window configs using the accessors in the game engine model
+            because the config has already been loaded there.
+        */
+        
+        this.model = model;
+        this.width = model.getWindowWidth();
+        this.height = model.getWindowHeight();
+
         /*
         NOTE: 
-            - Just initializing things and storing information.
-         */
-		this.width = width;
-        this.height = height;
-        this.model = model;
-
+            - Just initializing other things and storing information.
+        */
         pane = new Pane();
         scene = new Scene(pane, width, height);
         this.background = new SpaceBackground(model, pane);
