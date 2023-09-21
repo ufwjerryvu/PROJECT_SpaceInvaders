@@ -48,7 +48,7 @@ public class GameEngine {
 		WindowConfigReader cr = new ConfigReader(this.getConfigPath());
 
 		this.width = (int)(long) cr.getWindowWidth();
-        this.height = (int)(long) cr.getWindowHeight();
+        	this.height = (int)(long) cr.getWindowHeight();
 		
 		/*
 		NOTE:
