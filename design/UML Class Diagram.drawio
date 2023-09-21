@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-09-21T09:21:16.511Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="Sv0BF84SP1N59rOSGMky" version="21.8.0" type="device">
+<mxfile host="app.diagrams.net" modified="2023-09-21T09:53:29.008Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="uPW8I2AUlSelEWPmSlZm" version="21.8.0" type="device">
   <diagram name="Page-1" id="EP1AOG05duhbS7P-E66I">
-    <mxGraphModel dx="3341" dy="853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3703" dy="1117" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -403,6 +403,24 @@
         </mxCell>
         <mxCell id="GqJIR7_3Ax9wKfMFcQdq-7" value="+ «Create» Player(position: Coordinates)&lt;br&gt;+ takeDamage(amount: double): void&lt;br&gt;+ getHealth(): double&lt;br&gt;+ isAlive(): boolean&lt;br&gt;+ up(): void&lt;br&gt;+ down(): void&lt;br&gt;+ left(): void&lt;br&gt;+ right(): void&lt;br&gt;+ shoot(): void&lt;br&gt;+ getImage(): Image&lt;br&gt;+ getWidth(): double&lt;br&gt;+ getHeight(): double&lt;br&gt;+ getPosition(): Coordinates&lt;br&gt;+ getLayer(): Layer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="GqJIR7_3Ax9wKfMFcQdq-4">
           <mxGeometry y="144" width="360" height="218" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;endArrow=block;endFill=0;" edge="1" parent="1" source="GqJIR7_3Ax9wKfMFcQdq-11" target="qbkIMqkIBuKoh5u8v5fq-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;endArrow=block;endFill=0;" edge="1" parent="1" source="GqJIR7_3Ax9wKfMFcQdq-11" target="9aOEvVL7OmeXiqtgfUnT-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-11" value="Bunker" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#F19C99;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="206" width="360" height="286" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-12" value="- position: final Coordinates&lt;br&gt;- width: int&lt;br&gt;- height: int&lt;br&gt;- representation: Rectangle" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="GqJIR7_3Ax9wKfMFcQdq-11">
+          <mxGeometry y="26" width="360" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-13" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="GqJIR7_3Ax9wKfMFcQdq-11">
+          <mxGeometry y="108" width="360" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="GqJIR7_3Ax9wKfMFcQdq-14" value="+ «Create» Bunker(position: Coordinates, width: int, height: int)&lt;br&gt;&lt;br&gt;+ getImage(): Image&lt;br&gt;+ getWidth(): int&lt;br&gt;+ getHeight(): int&lt;br&gt;+ getLayer(): Layer&lt;br&gt;+ getPosition(): Coordinates&lt;br&gt;&lt;br&gt;+ getLives(): int&lt;br&gt;+ takeLives(number: int): void&lt;br&gt;+ isAlive(): boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="GqJIR7_3Ax9wKfMFcQdq-11">
+          <mxGeometry y="116" width="360" height="170" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
