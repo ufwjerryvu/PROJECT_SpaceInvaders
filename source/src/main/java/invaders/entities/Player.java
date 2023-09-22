@@ -8,7 +8,7 @@ import javafx.scene.image.*;
 
 import java.io.*;
 
-public class Player implements Moveable, Damagable, Renderable {
+public class Player implements Moveable, Damagable, Renderable, Collider {
     private final Coordinates position;
     private final Animator anim = null;
     private String colour;
