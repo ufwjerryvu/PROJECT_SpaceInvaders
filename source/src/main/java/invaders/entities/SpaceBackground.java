@@ -29,7 +29,7 @@ public class SpaceBackground implements Renderable {
 			- Filling up the background with black. What does `setViewOrder()`
 			do? Might have to look up some documentation for that.
 		 */
-		space.setFill(Paint.valueOf("WHITE"));
+		space.setFill(Paint.valueOf("BLACK"));
 		space.setViewOrder(1000.0);
 
 		pane.getChildren().add(space);

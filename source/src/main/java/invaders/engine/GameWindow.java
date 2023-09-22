@@ -4,7 +4,6 @@ import java.util.*;
 
 import invaders.entities.*;
 import invaders.rendering.*;
-import invaders.filehandler.*;
 
 import javafx.util.*;
 import javafx.animation.*;

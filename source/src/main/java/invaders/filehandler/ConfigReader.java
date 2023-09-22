@@ -16,11 +16,9 @@ public class ConfigReader implements PlayerConfigReader,
         JSON file set by the path. For example, this class reads in individual 
         information like the player's spawn points, or the size of the Window, etc.
      */
-    private String path;
     private JSONObject object;
 
     public ConfigReader(String path){
-        this.path = path;
         this.parseAll(path);
     }
 
