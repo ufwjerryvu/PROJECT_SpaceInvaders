@@ -42,7 +42,7 @@ public class GameWindow {
         */
         pane = new Pane();
         scene = new Scene(pane, width, height);
-        this.background = new SpaceBackground(model, pane);
+        this.background = new Blackground(model, pane);
 
         GameInput sprites = new GameInput(this.model);
 

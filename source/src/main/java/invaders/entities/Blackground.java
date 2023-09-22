@@ -10,12 +10,12 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.*;
 
-public class SpaceBackground implements Renderable {
+public class Blackground implements Renderable {
 	private Rectangle space;
 	private Pane pane;
     private GameEngine model;
 
-	public SpaceBackground(GameEngine engine, Pane pane){
+	public Blackground(GameEngine engine, Pane pane){
 		/*
 		NOTE:
 			- Setting the width and the height of the background.

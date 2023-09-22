@@ -4,6 +4,7 @@ import java.util.*;
 
 import invaders.*;
 import invaders.entities.*;
+import invaders.entities.builder.*;
 import invaders.physics.*;
 import invaders.rendering.*;
 import invaders.filehandler.*;
@@ -69,10 +70,13 @@ public class GameEngine {
 		renderables.add(player);
 
 		/*
-		TEST:
-			- Adding a sample bunker. 
+		NOTE:
+			- Adding all bunkers to `renderables` using the Builder pattern. This 
+			`GameEngine` class is the client and it calls on the director to deliver
+			the final product. 
 		*/
-		renderables.add(new Bunker(new Coordinates(100, 100), 30, 100));
+		BunkerDirector bunkerDirector = new BunkerDirector(new DefaultBunkerBuilder());
+		renderables.addAll(bunkerDirector.makeRegularBunkers(this.getConfigPath()));
 	}
 
 	public String getConfigPath(){

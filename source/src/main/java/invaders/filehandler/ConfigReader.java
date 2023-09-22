@@ -18,6 +18,14 @@ public class ConfigReader implements PlayerConfigReader,
      */
     private JSONObject object;
 
+    public ConfigReader(){
+        /*
+        NOTE:
+            - Nothing here. This is when we want to use the formatting functions
+            instead.
+        */
+    }
+
     public ConfigReader(String path){
         this.parseAll(path);
     }
