@@ -13,7 +13,8 @@ public class BunkerGreen extends BunkerState {
         */
         super(bunker);
 
-        bunker.setImage(new Image(new File("src/main/resources/bunker_green.png").toURI().toString()));
+        bunker.setImage(new Image(new File("src/main/resources/bunker_green.png").toURI().toString(),
+            bunker.getWidth(), bunker.getHeight(), false, true));
     }
 
     public void setNextState(){

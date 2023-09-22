@@ -67,6 +67,12 @@ public class GameEngine {
 		player = new Player(plCoordinates, plColour, plSpeed, plLives);
 
 		renderables.add(player);
+
+		/*
+		TEST:
+			- Adding a sample bunker. 
+		*/
+		renderables.add(new Bunker(new Coordinates(100, 100), 30, 100));
 	}
 
 	public String getConfigPath(){
