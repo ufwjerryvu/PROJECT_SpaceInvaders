@@ -20,13 +20,9 @@ public class BunkerRed extends BunkerState {
     public void setNextState(){
         /*
         NOTE:
-            - (TO-DO) The next state is `null` as there is no other states to go
-            on from here. This is because `null` should be enough to represent that
-            the object is to be destroyed. 
-
-            - We also need to reassign the state in the bunker object to `null`.
+            - We don't have a next state. We just simply mark the bunker up 
+            for deletion.
          */
-        BunkerState nextState = null;
-        this.getBunker().setNextState(nextState);
+        this.getBunker().setDeleteStatus(true);
     }
 }

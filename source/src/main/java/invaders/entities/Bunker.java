@@ -10,12 +10,13 @@ import invaders.logic.*;
 import invaders.physics.*;
 import invaders.rendering.*;
 
-public class Bunker implements Renderable{
+public class Bunker implements Renderable, Collider{
     private Coordinates position;
     private double width;
     private double height;
     private Image representation;
     private BunkerState state;
+    private boolean delete;
 
     public Bunker(Coordinates position, int width, int height){
         /*
@@ -26,6 +27,8 @@ public class Bunker implements Renderable{
         this.position = position;
         this.width = width;
         this.height = height;
+
+        this.delete = false;
 
         /*
         NOTE:
@@ -80,6 +83,22 @@ public class Bunker implements Renderable{
         return this.position;
     }
 
+    public boolean getDeleteStatus(){
+        /*
+        NOTE:
+            - Returns whether the object is marked for deletion.
+        */
+        return this.delete;
+    }
+
+    public void setDeleteStatus(boolean delete){
+        /*
+        NOTE:
+            - Sets whether the object is marked for deletion.
+        */
+        this.delete = delete;
+    }
+
     public void setImage(Image image){
         /*
         NOTE:
@@ -96,5 +115,27 @@ public class Bunker implements Renderable{
         */
 
         this.state = state;
+    }
+
+    @Override
+    public boolean isColliding(Collider col){
+        /*
+        NOTE:
+            - Using the default interface method while overriding because
+            we need to do other things like setting the next state for the object
+            as well.
+         */
+        boolean collided = Collider.super.isColliding(col);
+
+        /*
+        NOTE:
+            - Telling the state object that this Bunker has collided and needs to 
+            be set to a different color.
+        */
+        if(collided){
+            this.state.setNextState();
+        }
+
+        return collided;
     }
 }

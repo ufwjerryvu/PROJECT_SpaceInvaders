@@ -19,27 +19,30 @@ public class GameEngine {
 	private final int width;
 	private final int height;
 
-	private List<Sprite> sprites;
 	private List<Renderable> renderables;
+	private List<Renderable> deletables;
+
 	private Player player;
+	private Projectile playerProjectile;
+	private List<Bunker> bunkers;
 
 	private boolean left;
 	private boolean right;
 
 	public GameEngine(String configPath){
 		/*
-		NOTE:
+		SECTION 1:
 			- We are using the `ConfigReader` to get each configuration specified
 			by the config file.
 		*/
 
 		this.configPath = configPath;
 
-		sprites = new ArrayList<Sprite>();
-		renderables = new ArrayList<Renderable>();
+		this.renderables = new ArrayList<Renderable>();
+		this.deletables = new ArrayList<Renderable>();
 
 		/*
-		NOTE:
+		SECTION 2:
 			- Here we are using the `WindowConfigReader` interface to load the configs 
 			for the game. It's pretty simple cause we only have the width and the height
 			of the window. The template given was really bad because we need to use the
@@ -52,7 +55,7 @@ public class GameEngine {
         	this.height = (int)(long) cr.getWindowHeight();
 		
 		/*
-		NOTE:
+		SECTION 3:
 			- Here we are using the `PlayerConfigReader` interface to load the configs
 			for the player from the JSON file.
 
@@ -65,18 +68,25 @@ public class GameEngine {
 		int plSpeed = (int)(long) pcr.getPlayerSpeed();
 		int plLives = (int)(long) pcr.getPlayerLives();
 
-		player = new Player(plCoordinates, plColour, plSpeed, plLives);
-
-		renderables.add(player);
+		this.player = new Player(plCoordinates, plColour, plSpeed, plLives);
 
 		/*
-		NOTE:
-			- Adding all bunkers to `renderables` using the Builder pattern. This 
+		SECTION 4:
+			-  Intializing all of the bunker objects using the Builder pattern. This 
 			`GameEngine` class is the client and it calls on the director to deliver
 			the final product. 
+
+			- And then the bunkers are added to renderables to render.
 		*/
 		BunkerDirector bunkerDirector = new BunkerDirector(new DefaultBunkerBuilder());
-		renderables.addAll(bunkerDirector.makeRegularBunkers(this.getConfigPath()));
+		this.bunkers = bunkerDirector.makeRegularBunkers(this.getConfigPath());
+
+		/*
+		SECTION 5:
+			- Adding things to renderables.
+		 */
+		this.renderables.add(this.player);
+		this.renderables.addAll(this.bunkers);
 	}
 
 	public String getConfigPath(){
@@ -105,16 +115,106 @@ public class GameEngine {
 		return this.height;
 	}
 
+	public void removeRenderable(Renderable renderable){
+		/*
+		NOTE:
+			- Making this a function because we are going to need to remove
+			a lot of things and this just makes it easier and reusable.
+		 */
+		this.renderables.remove(renderable);
+		this.deletables.add(renderable);
+	}
+
+	public void updatePlayer(){
+		/*
+		NOTE:
+			- We move the player if any movements is detected.
+		 */
+		this.movePlayer();
+	}
+
+	public void updateProjectiles(){
+		if(this.playerProjectile != null){
+			/*
+			NOTE:
+				- Updating the motion of the player's projectile.
+			*/
+			this.playerProjectile.up();
+
+			/*
+			NOTE:
+				- We're checking if the player's projectile is colliding with any bunkers.
+			*/
+			for(Bunker bunker: this.bunkers){
+				if(this.playerProjectile.isColliding(bunker)){
+					/*
+					NOTE:
+						- If it is then we remove the player projectile from the list of 
+						renderables and make the projectile null.
+					*/
+					this.removeRenderable(this.playerProjectile);
+					this.playerProjectile = null;
+					break;
+				}
+			}
+		}
+		
+		/*
+		NOTE:
+			- Now we need to check if it's null again.
+		*/
+		if(this.playerProjectile != null){
+			final int WINDOW_TOP_BOUNDARY = 0;
+
+			/*
+			NOTE:
+				- Here, we remove it has reached the top of the window.
+				*/
+			if(this.playerProjectile.getPosition().getY() <= WINDOW_TOP_BOUNDARY){
+				this.removeRenderable(this.playerProjectile);
+				this.playerProjectile = null;
+			}
+		}
+	}
+
+	public void updateBunkers(){
+		/*
+		NOTE:
+			- This is to see if the bunkers need to be deleted.
+		*/
+		List<Bunker> removables = new ArrayList<Bunker>();
+
+		for(Bunker bunker : this.bunkers){
+			if(bunker.getDeleteStatus()){
+				/*
+				NOTE:
+					- First, we remove them from rendering. If we delete the 
+					bunker object from the bunkers list then we will absolutely
+					run into a `ConcurrentModificationException`.
+				 */
+				this.removeRenderable(bunker);
+				removables.add(bunker);
+			}
+		}
+
+		for(Bunker removable : removables){
+			/*
+			NOTE:
+				- Then, we actually delete the object.
+			 */
+			this.bunkers.remove(removable);
+		}
+	}
+
 	public void update(){
 		/*
 		NOTE: 
 			- Updates the game with every frame.
 		*/
 
-		movePlayer();
-		for(Sprite sprite: sprites){
-			sprite.update();
-		}
+		this.updatePlayer();
+		this.updateProjectiles();
+		this.updateBunkers();
 
 		/*
 		NOTE:
@@ -158,6 +258,20 @@ public class GameEngine {
 		return renderables;
 	}
 
+	public List<Renderable> getDeletables(){
+		/*
+		NOTE:
+			- We first use the copy constructor to make sure when we clear the
+			deletables from the list of deletable objects, the return list isn't
+			empty.
+		 */
+		List<Renderable> temp = new ArrayList<Renderable>(this.deletables);
+
+		this.deletables.clear();
+
+		return temp;
+	}
+
 	/*
 	NOTE:
 		- Mutators for released and pressed buttons.
@@ -178,7 +292,40 @@ public class GameEngine {
 	}
 
 	public boolean shootPressed(){
-		player.shoot();
+		/*
+		NOTE:
+			- We need to check if the player projectile has existed yet. 
+
+			- If not, we allocate a new projectile object and we pass the player's
+			coordinates in but we modify the starting position a little bit to 
+			center the projectile object. 
+		*/
+		
+		if(this.playerProjectile == null){
+			final double DUMMY = 0;
+
+			/*
+			NOTE:
+				- Finding the center of the player object but also taking into
+				account the width and height of the projectile.
+			 */
+			int projectileWidth = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getWidth();
+			int projectileHeight = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getHeight();
+
+			double playerCenterX = this.player.getPosition().getX() + this.player.getWidth() / 2 -
+				projectileWidth / 2;
+			
+			double startY = this.player.getPosition().getY() - projectileHeight;
+
+			this.playerProjectile = new Projectile(new Coordinates(playerCenterX, startY));
+
+			/*
+			NOTE:
+				- Adding the player's projectile to renderables and collidables.
+			 */
+			this.renderables.add(this.playerProjectile);
+		}
+
 		return true;
 	}
 

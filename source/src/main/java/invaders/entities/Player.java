@@ -1,5 +1,6 @@
 package invaders.entities;
 
+import invaders.Sprite;
 import invaders.logic.*;
 import invaders.physics.*;
 import invaders.rendering.*;
@@ -18,6 +19,8 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
     private final double width = 25;
     private final double height = 30;
     private final Image image;
+
+    private Projectile projectile;
 
     public Player(Coordinates position, String colour, int speed, int lives){
         /*
@@ -98,6 +101,14 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
         return this.speed;
     }
 
+    public Projectile getProjectile(){
+        /*
+        NOTE:
+            - Returns the projectile object.
+        */
+        return this.projectile;
+    }
+
     @Override
     public void takeLives(int number) {
         /*
@@ -163,11 +174,5 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
         this.position.setX(this.position.getX() + NUMBER_OF_PIXELS);
     }
 
-    public void shoot(){
-        /*
-        NOTE:
-            - (TO-DO) We need to implement this function
-        */
-    }
 
 }

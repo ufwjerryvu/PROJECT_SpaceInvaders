@@ -50,7 +50,6 @@ public class GameWindow {
         scene.setOnKeyReleased(sprites::handleReleased);
 
         viewports = new ArrayList<Viewport>();
-
     }
 
 	public void run() {
@@ -72,6 +71,20 @@ public class GameWindow {
             - Draws all the renderables in the game engine model.
          */
         List<Renderable> renderables = model.getRenderables();
+        List<Renderable> deletables = model.getDeletables();
+
+        for(Renderable entity : deletables){
+            /*
+            NOTE:
+                - We mark for deletion here.
+            */
+            for(Viewport view : viewports){
+                if(view.matchesEntity(entity)){
+                    view.markForDelete();
+                }
+            }
+        }
+
         for (Renderable entity : renderables) {
             boolean notFound = true;
             /*
