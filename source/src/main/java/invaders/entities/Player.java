@@ -20,8 +20,6 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
     private final double height = 30;
     private final Image image;
 
-    private Projectile projectile;
-
     public Player(Coordinates position, String colour, int speed, int lives){
         /*
         NOTE:
@@ -101,14 +99,6 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
         return this.speed;
     }
 
-    public Projectile getProjectile(){
-        /*
-        NOTE:
-            - Returns the projectile object.
-        */
-        return this.projectile;
-    }
-
     @Override
     public void takeLives(int number) {
         /*
@@ -173,6 +163,4 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
         final int NUMBER_OF_PIXELS = this.getSpeed();
         this.position.setX(this.position.getX() + NUMBER_OF_PIXELS);
     }
-
-
 }

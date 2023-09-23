@@ -161,15 +161,17 @@ public class GameEngine {
 		
 		/*
 		NOTE:
-			- Now we need to check if it's null again.
+			- Now we need to check if it's null again because it might have
+			been deleted while colliding with the bunkers in the previous 
+			block.
 		*/
 		if(this.playerProjectile != null){
 			final int WINDOW_TOP_BOUNDARY = 0;
 
 			/*
 			NOTE:
-				- Here, we remove it has reached the top of the window.
-				*/
+				- Here, we remove it if it has reached the top of the window.
+			*/
 			if(this.playerProjectile.getPosition().getY() <= WINDOW_TOP_BOUNDARY){
 				this.removeRenderable(this.playerProjectile);
 				this.playerProjectile = null;
@@ -190,7 +192,8 @@ public class GameEngine {
 				NOTE:
 					- First, we remove them from rendering. If we delete the 
 					bunker object from the bunkers list then we will absolutely
-					run into a `ConcurrentModificationException`.
+					run into a `ConcurrentModificationException`. Thus it has to 
+					be divided into two separate sections.
 				 */
 				this.removeRenderable(bunker);
 				removables.add(bunker);
@@ -209,7 +212,7 @@ public class GameEngine {
 	public void update(){
 		/*
 		NOTE: 
-			- Updates the game with every frame.
+			- Updates the game for every frame.
 		*/
 
 		this.updatePlayer();

@@ -116,7 +116,7 @@ public class Projectile implements Renderable, Collider, Moveable{
     public boolean isColliding(Collider col){
         /*
         NOTE:
-            - Calls the other object's `isColliding()` method.
+            - Activates the other collidable object's `isColliding()` method.
         */
         return col.isColliding(this);
     }
