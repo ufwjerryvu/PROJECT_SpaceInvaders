@@ -12,12 +12,12 @@ public interface ProjectileFactory {
             - Returns the horizontal center position of the entity shooting the projectile.
         */
         int projectileWidth = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getWidth();
-        int projectileHeight = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getHeight();
+        //int projectileHeight = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getHeight();
 
         double entityCenterX = shootingEntity.getPosition().getX() + shootingEntity.getWidth() / 2 -
             projectileWidth / 2;
         
-        // double startY = this.player.getPosition().getY() - projectileHeight;
+        //double startY = this.player.getPosition().getY() - projectileHeight;
 
         return entityCenterX;
     }

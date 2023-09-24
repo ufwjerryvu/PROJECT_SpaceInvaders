@@ -1,6 +1,5 @@
 package invaders.entities;
 
-import invaders.Sprite;
 import invaders.logic.*;
 import invaders.physics.*;
 import invaders.rendering.*;
@@ -162,5 +161,46 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
         */
         final int NUMBER_OF_PIXELS = this.getSpeed();
         this.position.setX(this.position.getX() + NUMBER_OF_PIXELS);
+    }
+
+    public boolean isColliding(Projectile projectile){
+        /*
+        NOTE:
+            - Checking if the player is colliding with a projectile object.
+             We take a life away from the player if they are colliding.
+        */
+        boolean collided = Collider.super.isColliding(projectile);
+
+        if(collided){
+            final int NUMBER_OF_LIVES_TO_DEDUCT = 1;
+            this.takeLives(NUMBER_OF_LIVES_TO_DEDUCT);
+        }
+
+        return collided;
+    }
+
+    public boolean isColliding(Alien enemy){
+        /*
+        NOTE:
+            - Slightly different thing if we're colliding with an enemy. We
+            simply lose the game. All lives lost.
+         */
+        boolean collided = Collider.super.isColliding(enemy);
+
+        if(collided){
+            this.lives = 0;
+        }
+
+        /*
+        NOTE:
+            - If, however, an enemy is levelwith the player then the game is
+            also lost.
+        */
+
+        if(enemy.getPosition().getY() >= this.position.getY()){
+            this.lives = 0;
+        }
+
+        return collided;
     }
 }

@@ -161,4 +161,20 @@ public class Alien implements Renderable, Collider, Moveable{
 
         return collided;
     }
+
+    public boolean isColliding(Player col){
+        /*
+        NOTE:
+            - Activates the player's `isColliding()` implementation.
+        */
+        return col.isColliding(this);
+    }
+
+    public boolean isColliding(Bunker col){
+        /*
+        NOTE:
+            - Activates the bunker's `isColliding()` function.
+        */
+        return col.isColliding(this);
+    }
 }

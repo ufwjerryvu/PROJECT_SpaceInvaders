@@ -2,7 +2,6 @@ package invaders.engine;
 
 import java.util.*;
 
-import invaders.*;
 import invaders.entities.*;
 import invaders.entities.builders.*;
 import invaders.entities.factories.*;
@@ -27,6 +26,9 @@ public class GameEngine {
 
 	private final int width;
 	private final int height;
+
+	private boolean won = false;
+	private boolean lost = false;
 
 	private List<Renderable> renderables;
 	private List<Renderable> deletables;
@@ -103,6 +105,8 @@ public class GameEngine {
 		this.aliens = alienDirector.makeRegularAliens(this.getConfigPath());
 		this.alienHerdDirection = Direction.NONE;
 
+		this.alienProjectiles = new ArrayList<Projectile>();
+
 		/*
 		SECTION 6:
 			- Adding things to renderables.
@@ -154,6 +158,11 @@ public class GameEngine {
 			- We move the player if any movements is detected.
 		 */
 		this.movePlayer();
+
+		if(player.getLives() <= 0){
+			this.won = false;
+			this.lost = true;
+		}
 	}
 
 	public void updatePlayerProjectile(){
@@ -221,11 +230,111 @@ public class GameEngine {
 		}
 	}
 
-	public void updateEnemyProjectile(){
-		
+	public void updateEnemyProjectiles(){
+		/*
+		NOTE:
+			- Picking three random aliens to shoot from.
+		*/
+		final int MAX_NUMBER_OF_ALIEN_PROJECTILES = 3;
+
+		/*
+		NOTE:
+			- The variable below denotes how many aliens should be shooting simultaneously.
+		 */
+		int count_aliens_shoot_simultaneously = 1;
+
+		List<Alien> randoms = this.pickRandomAliens(count_aliens_shoot_simultaneously);
+		final int ARBITRARY_CHANCE = 150;
+
+		if(this.alienProjectiles.size() < MAX_NUMBER_OF_ALIEN_PROJECTILES
+			&& this.alienShootDecision(ARBITRARY_CHANCE)){
+			/*
+			NOTE:
+				- Using the factory pattern to produce projectiles.
+			*/
+			ProjectileFactory factory = null;
+
+			for(Alien random : randoms){
+				if(random.getStrategy().equals("fast_straight")){
+					factory = new FastProjectileFactory();
+				}
+				if(random.getStrategy().equals("slow_straight")){
+					factory = new SlowProjectileFactory();
+				}
+
+				/*
+				NOTE:
+					- We produce alien projectiles using the factory pattern and
+					we need to add it to the list of renderables as well.
+				*/
+				Projectile temp = factory.produceProjectile(random);
+				this.alienProjectiles.add(temp);
+				this.renderables.add(temp);
+			}
+		}
+
+		/*
+		NOTE:
+			- Moving all projectiles downwards.
+		*/
+		List<Projectile> removables = new ArrayList<Projectile>();
+
+		for(Projectile projectile : this.alienProjectiles){
+			projectile.down();
+			
+			/*
+			NOTE:
+				- If a projectile goes out of the window boundaries then we remove
+				that projectile from the list of renderables and we remove it from
+				the list of projectiles.
+			 */
+			boolean markedForRemoval = false;
+
+			if(projectile.getPosition().getY() + projectile.getHeight() >= this.height - 1){
+				markedForRemoval = true;
+			}
+
+			if(projectile.isColliding(this.player)){
+				markedForRemoval = true;
+			}
+
+			/*
+			NOTE:
+				- Check if the projectile is colliding with any bunkers. Breaking
+				early because we don't want to be looping through the remaining.
+			 */
+			for(Bunker bunker : this.bunkers){
+				if(projectile.isColliding(bunker)){
+					markedForRemoval = true;
+					break;
+				}
+			}
+
+			if(markedForRemoval){
+				this.removeRenderable(projectile);
+				removables.add(projectile);
+			}
+		}
+
+		for(Projectile removable : removables){
+			/*
+			NOTE:
+				- Then, we actually delete the object.
+			 */
+			this.alienProjectiles.remove(removable);
+		}
 	}
 
 	public void updateBunkers(){
+		/*
+		NOTE:
+			- This is to see if the bunkers have collided with an enemy
+		*/
+		for(Bunker bunker : this.bunkers){
+			for(Alien enemy : this.aliens){
+				enemy.isColliding(bunker);
+			}
+		}
 		/*
 		NOTE:
 			- This is to see if the bunkers need to be deleted.
@@ -310,6 +419,7 @@ public class GameEngine {
 		this.updatePlayerProjectile();
 		this.updateBunkers();
 		this.updateAliens();
+		this.updateEnemyProjectiles();
 
 		/*
 		NOTE:
@@ -536,4 +646,50 @@ public class GameEngine {
 			}
 		}
 	}
+
+    private List<Alien> pickRandomAliens(int amount) {
+        if (amount >= this.aliens.size()) {
+            /*
+			NOTE:
+				- Return a copy of the input list if count is greater than or equal to the list size.
+			*/
+            return new ArrayList<>(this.aliens);
+        }
+
+        Random random = new Random();
+        List<Alien> randomAliens = new ArrayList<>();
+		
+		/*
+		NOTE:
+			- Creating a copy to avoid modifying the original list.
+		 */
+        List<Alien> temp = new ArrayList<Alien>(this.aliens); 
+
+        for (int i = 0; i < amount; i++) {
+            int randomIndex = random.nextInt(temp.size());
+            randomAliens.add(temp.remove(randomIndex)); // Remove and add the random element
+        }
+
+        return randomAliens;
+    }
+
+	private boolean alienShootDecision(int chance){
+		/*
+		NOTE:
+			- We produce a 1 in `chance` that the enemy is going to shoot.
+			The higher the chance the less likely the enemy is going to 
+			shoot.
+		 */
+		Random random = new Random();
+
+		int randomNumber = random.nextInt(chance);
+
+		final int BENCHMARK = 0;
+		if(randomNumber == BENCHMARK){
+			return true;
+		}
+
+		return false;
+	}
+
 }

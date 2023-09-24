@@ -8,7 +8,6 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
-import javafx.scene.*;
 
 public class Blackground implements Renderable {
 	private Rectangle space;

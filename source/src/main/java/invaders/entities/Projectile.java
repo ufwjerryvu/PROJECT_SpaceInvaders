@@ -137,4 +137,22 @@ public class Projectile implements Renderable, Collider, Moveable{
         */
         return col.isColliding(this);
     }
+
+    public boolean isColliding(Player col){
+        /*
+        NOTE:
+            - Activates the Player's `isColliding()` method.
+        */
+        return col.isColliding(this);
+    }
+
+    public boolean isColliding(Projectile col){
+        /*
+        NOTE:
+            - Just uses the default implementation. We don't even actually need
+             to override this. But I'm doing this to show that I'm intentional
+             about this.
+        */
+        return Collider.super.isColliding(col);
+    }
 }

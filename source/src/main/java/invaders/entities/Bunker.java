@@ -2,11 +2,7 @@ package invaders.entities;
 
 import javafx.scene.image.*;
 
-import invaders.*;
-import invaders.engine.*;
 import invaders.entities.states.*;
-import invaders.filehandler.*;
-import invaders.logic.*;
 import invaders.physics.*;
 import invaders.rendering.*;
 
@@ -133,6 +129,22 @@ public class Bunker implements Renderable, Collider{
         */
         if(collided){
             this.state.setNextState();
+        }
+
+        return collided;
+    }
+
+    public boolean isColliding(Alien col){
+        /*
+        NOTE:
+            - If a bunker is found to have collided with an alien then the bunker
+            for deletion.
+         */
+
+        boolean collided = Collider.super.isColliding(col);
+
+        if(collided){
+            this.setDeleteStatus(true);
         }
 
         return collided;
