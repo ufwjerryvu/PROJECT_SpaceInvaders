@@ -4,7 +4,9 @@ import java.util.*;
 
 import invaders.*;
 import invaders.entities.*;
-import invaders.entities.builder.*;
+import invaders.entities.builders.*;
+import invaders.entities.strategies.FastStraight;
+import invaders.entities.strategies.SlowStraight;
 import invaders.physics.*;
 import invaders.rendering.*;
 import invaders.filehandler.*;
@@ -321,6 +323,7 @@ public class GameEngine {
 			double startY = this.player.getPosition().getY() - projectileHeight;
 
 			this.playerProjectile = new Projectile(new Coordinates(playerCenterX, startY));
+			this.playerProjectile.setStrategy(new FastStraight());
 
 			/*
 			NOTE:

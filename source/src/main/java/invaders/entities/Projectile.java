@@ -2,11 +2,10 @@ package invaders.entities;
 
 import java.io.File;
 
-import invaders.physics.Collider;
-import invaders.physics.Coordinates;
-import invaders.physics.Moveable;
-import invaders.rendering.Renderable;
-import javafx.scene.image.Image;
+import invaders.entities.strategies.*;
+import invaders.physics.*;
+import invaders.rendering.*;
+import javafx.scene.image.*;
 
 public class Projectile implements Renderable, Collider, Moveable{
     private Coordinates position;
@@ -14,6 +13,7 @@ public class Projectile implements Renderable, Collider, Moveable{
     private double height; 
     private Image image;
     private double speed;
+    private ProjectileStrategy strategy;
 
     public Projectile(Coordinates position){
         /*
@@ -37,8 +37,8 @@ public class Projectile implements Renderable, Collider, Moveable{
             we will worry about setting the strategy later on. The strategy will
             be set by the Builder.
          */
-        final int SLOW_STRAIGHT = 1;
-        this.speed = SLOW_STRAIGHT;
+        this.strategy = new SlowStraight();
+        this.speed = this.strategy.getStrategicSpeed();
     }
 
     public Image getImage(){
@@ -81,6 +81,15 @@ public class Projectile implements Renderable, Collider, Moveable{
         return this.position;
     }
 
+    public void setStrategy(ProjectileStrategy strategy){
+        /*
+        NOTE:
+            - We set the speed as we pick a new strategy.
+        */
+        this.strategy = strategy;
+        this.speed = strategy.getStrategicSpeed();
+    }
+
     public void up(){
         /*
         NOTE:
@@ -113,7 +122,7 @@ public class Projectile implements Renderable, Collider, Moveable{
         return;
     }
 
-    public boolean isColliding(Collider col){
+    public boolean isColliding(Bunker col){
         /*
         NOTE:
             - Activates the other collidable object's `isColliding()` method.

@@ -117,8 +117,7 @@ public class Bunker implements Renderable, Collider{
         this.state = state;
     }
 
-    @Override
-    public boolean isColliding(Collider col){
+    public boolean isColliding(Projectile col){
         /*
         NOTE:
             - Using the default interface method while overriding because

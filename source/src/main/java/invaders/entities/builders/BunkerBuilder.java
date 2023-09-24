@@ -1,4 +1,4 @@
-package invaders.entities.builder;
+package invaders.entities.builders;
 
 import org.json.simple.JSONObject;
 
