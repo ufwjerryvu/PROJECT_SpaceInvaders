@@ -1,5 +1,6 @@
 package invaders.engine;
 
+import java.io.File;
 import java.util.*;
 
 import invaders.entities.*;
@@ -7,6 +8,7 @@ import invaders.entities.builders.*;
 import invaders.entities.factories.*;
 import invaders.physics.*;
 import invaders.rendering.*;
+import javafx.scene.image.Image;
 import invaders.filehandler.*;
 
 enum Direction{
@@ -35,6 +37,7 @@ public class GameEngine {
 
 	private Player player;
 	private Projectile playerProjectile;
+	private int playerDeathCounter = 0;
 	private List<Bunker> bunkers;
 	private List<Alien> aliens;
 	private List<Projectile> alienProjectiles;
@@ -159,9 +162,35 @@ public class GameEngine {
 		 */
 		this.movePlayer();
 
+		/*
+		NOTE:
+			- Animating the player just a bit to let the player know
+			that he or she has been hit by the projectile.
+		 */
+		if(this.playerDeathCounter > 0){
+			this.playerDeathCounter++;
+			this.player.setDeathImage();
+		}
+
+		/*
+		NOTE:
+			- We are going to let the player dissapear and reappear 
+			in approximately a fifth of a second.
+		 */
+		final int INTERVAL_IN_FRAMES = 12;
+		if(this.playerDeathCounter > INTERVAL_IN_FRAMES){
+			this.playerDeathCounter = 0;
+			this.player.setRegularImage();
+		}
+
 		if(player.getLives() <= 0){
 			this.won = false;
 			this.lost = true;
+		}
+
+		if(this.aliens.size() <= 0){
+			this.won = true;
+			this.lost = false;
 		}
 	}
 
@@ -296,6 +325,7 @@ public class GameEngine {
 
 			if(projectile.isColliding(this.player)){
 				markedForRemoval = true;
+				this.playerDeathCounter++;
 			}
 
 			/*
@@ -307,6 +337,19 @@ public class GameEngine {
 				if(projectile.isColliding(bunker)){
 					markedForRemoval = true;
 					break;
+				}
+			}
+
+			/*
+			NOTE:
+				- Removing both projectiles if they collide.
+			 */
+			if(this.playerProjectile != null){
+				if(projectile.isColliding(this.playerProjectile)){
+					markedForRemoval = true;
+					this.removeRenderable(this.playerProjectile);
+					removables.add(this.playerProjectile);
+					this.playerProjectile = null;
 				}
 			}
 

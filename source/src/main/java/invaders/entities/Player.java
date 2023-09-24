@@ -17,7 +17,7 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
 
     private final double width = 25;
     private final double height = 30;
-    private final Image image;
+    private Image image;
 
     public Player(Coordinates position, String colour, int speed, int lives){
         /*
@@ -96,6 +96,16 @@ public class Player implements Moveable, Damagable, Renderable, Collider {
             frame.
         */
         return this.speed;
+    }
+
+    public void setDeathImage(){
+        this.image = new Image(new File("src/main/resources/player_die.png").toURI().toString(), 
+            width, height, true, true);
+    }
+
+    public void setRegularImage(){
+        this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), 
+            width, height, true, true);
     }
 
     @Override
