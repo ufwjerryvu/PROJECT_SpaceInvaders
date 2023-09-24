@@ -1,6 +1,5 @@
 package invaders.engine;
 
-import java.io.File;
 import java.util.*;
 
 import invaders.entities.*;
@@ -8,7 +7,6 @@ import invaders.entities.builders.*;
 import invaders.entities.factories.*;
 import invaders.physics.*;
 import invaders.rendering.*;
-import javafx.scene.image.Image;
 import invaders.filehandler.*;
 
 enum Direction{
@@ -31,6 +29,7 @@ public class GameEngine {
 
 	private boolean won = false;
 	private boolean lost = false;
+	private Status statusScreen;
 
 	private List<Renderable> renderables;
 	private List<Renderable> deletables;
@@ -73,6 +72,9 @@ public class GameEngine {
 		this.width = (int)(long) cr.getWindowWidth();
         	this.height = (int)(long) cr.getWindowHeight();
 		
+		final double statusX = this.width / 2 - new Status(new Coordinates(0, 0)).getWidth() / 2;
+		final double statusY = this.height / 2 - new Status(new Coordinates(0, 0)).getHeight() / 2;
+		this.statusScreen = new Status(new Coordinates(statusX, statusY));
 		/*
 		SECTION 3:
 			- Here we are using the `PlayerConfigReader` interface to load the configs
@@ -416,6 +418,14 @@ public class GameEngine {
 
 		/*
 		NOTE:
+			- We check the aliens' collisions with the player.
+		*/
+		for(Alien alien : this.aliens){
+			alien.isColliding(this.player);
+		}
+
+		/*
+		NOTE:
 			- We check if there are any aliens that need to be removed.
 		*/
 		List<Alien> removables = new ArrayList<Alien>();
@@ -452,11 +462,38 @@ public class GameEngine {
 		}
 	}
 
+	public void displayGameStatus(){
+		/*
+		NOTE:
+			- This is sort of a band-aid solution because I haven't figured out
+			how to output text to the screen but time is of the essence so let's
+			make do with whatever we have.
+		 */
+		List<Renderable> currentRenderables = new ArrayList<Renderable>(this.renderables);
+
+		for(Renderable renderable : currentRenderables){
+			this.removeRenderable(renderable);
+		}
+
+		if(this.won){
+			this.statusScreen.setWin();
+			this.renderables.add(statusScreen);
+		}else if(this.lost){
+			this.statusScreen.setLose();
+			this.renderables.add(statusScreen);
+		}
+	}
+
 	public void update(){
 		/*
 		NOTE: 
 			- Updates the game for every frame.
 		*/
+
+		if(this.won || this.lost){
+			this.displayGameStatus();
+			return;
+		}
 
 		this.updatePlayer();
 		this.updatePlayerProjectile();
