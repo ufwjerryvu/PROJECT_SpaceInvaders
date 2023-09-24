@@ -9,7 +9,8 @@ public class BunkerGreen extends BunkerState {
     public BunkerGreen(Bunker bunker){
         /*
         NOTE:
-            - We're setting the image of the bunker to green.
+            - We're setting the image of the bunker to green. We don't want to 
+            preserve the ratio because the size of bunkers can vary.
         */
         super(bunker);
 

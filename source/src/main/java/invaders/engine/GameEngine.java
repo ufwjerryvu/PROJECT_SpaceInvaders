@@ -5,8 +5,7 @@ import java.util.*;
 import invaders.*;
 import invaders.entities.*;
 import invaders.entities.builders.*;
-import invaders.entities.strategies.FastStraight;
-import invaders.entities.strategies.SlowStraight;
+import invaders.entities.factories.*;
 import invaders.physics.*;
 import invaders.rendering.*;
 import invaders.filehandler.*;
@@ -26,6 +25,8 @@ public class GameEngine {
 
 	private Player player;
 	private Projectile playerProjectile;
+	private List<Alien> aliens;
+	private List<Projectile> alienProjectiles;
 	private List<Bunker> bunkers;
 
 	private boolean left;
@@ -74,7 +75,7 @@ public class GameEngine {
 
 		/*
 		SECTION 4:
-			-  Intializing all of the bunker objects using the Builder pattern. This 
+			- Initializing all of the bunker objects using the Builder pattern. This 
 			`GameEngine` class is the client and it calls on the director to deliver
 			the final product. 
 
@@ -85,10 +86,18 @@ public class GameEngine {
 
 		/*
 		SECTION 5:
+			- Initializing all enemy objects using the Builder pattern as well.
+		*/
+		AlienDirector alienDirector = new AlienDirector(new DefaultAlienBuilder());
+		this.aliens = alienDirector.makeRegularAliens(this.getConfigPath());
+
+		/*
+		SECTION 6:
 			- Adding things to renderables.
 		 */
 		this.renderables.add(this.player);
 		this.renderables.addAll(this.bunkers);
+		this.renderables.addAll(this.aliens);
 	}
 
 	public String getConfigPath(){
@@ -307,23 +316,13 @@ public class GameEngine {
 		*/
 		
 		if(this.playerProjectile == null){
-			final double DUMMY = 0;
-
 			/*
 			NOTE:
-				- Finding the center of the player object but also taking into
-				account the width and height of the projectile.
+				- We use the factory method to produce the player's projectile.
+				The player is needed as an argument as it is a shooting entity.
 			 */
-			int projectileWidth = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getWidth();
-			int projectileHeight = (int) new Projectile(new Coordinates(DUMMY, DUMMY)).getHeight();
-
-			double playerCenterX = this.player.getPosition().getX() + this.player.getWidth() / 2 -
-				projectileWidth / 2;
-			
-			double startY = this.player.getPosition().getY() - projectileHeight;
-
-			this.playerProjectile = new Projectile(new Coordinates(playerCenterX, startY));
-			this.playerProjectile.setStrategy(new FastStraight());
+			ProjectileFactory factory = new SlowProjectileFactory();
+			this.playerProjectile = factory.produceProjectile(this.player);
 
 			/*
 			NOTE:
