@@ -30,7 +30,7 @@ public class Alien implements Renderable, Collider, Moveable{
         this.image = new Image(new File("src/main/resources/enemy.png").toURI().toString(), 
             width, height, false, true);
         
-        this.speed = 0.5;
+        this.speed = 0.1;
     }
 
     public Image getImage(){
@@ -111,7 +111,7 @@ public class Alien implements Renderable, Collider, Moveable{
         NOTE:
             - Increases by a constant number of pixels per frame.
         */
-        final double ACCELERATION = 0.2;
+        final double ACCELERATION = 0.03;
         this.speed += ACCELERATION;
     }
 
@@ -145,5 +145,20 @@ public class Alien implements Renderable, Collider, Moveable{
             - Enemies can go right.
          */
         this.position.setX(this.position.getX() + this.speed);
+    }
+
+    public boolean isColliding(Projectile projectile){
+        /*
+        NOTE:
+            - Using the default interface method.
+        */
+
+        boolean collided = Collider.super.isColliding(projectile);
+
+        if(collided){
+            this.setDeleteStatus(true);
+        }
+
+        return collided;
     }
 }

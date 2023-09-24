@@ -129,4 +129,12 @@ public class Projectile implements Renderable, Collider, Moveable{
         */
         return col.isColliding(this);
     }
+
+    public boolean isColliding(Alien col){
+        /*
+        NOTE:
+            - Activates the Alien's `isColliding()` method.
+        */
+        return col.isColliding(this);
+    }
 }

@@ -10,6 +10,14 @@ import invaders.physics.*;
 import invaders.rendering.*;
 import invaders.filehandler.*;
 
+enum Direction{
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	NONE
+}
+
 public class GameEngine {
 	/*
 	NOTE:
@@ -25,10 +33,13 @@ public class GameEngine {
 
 	private Player player;
 	private Projectile playerProjectile;
+	private List<Bunker> bunkers;
 	private List<Alien> aliens;
 	private List<Projectile> alienProjectiles;
-	private List<Bunker> bunkers;
-
+	private Direction alienHerdDirection;
+	private int frameCountDescend = 0;
+	private boolean herdDescent = false;
+	
 	private boolean left;
 	private boolean right;
 
@@ -90,6 +101,7 @@ public class GameEngine {
 		*/
 		AlienDirector alienDirector = new AlienDirector(new DefaultAlienBuilder());
 		this.aliens = alienDirector.makeRegularAliens(this.getConfigPath());
+		this.alienHerdDirection = Direction.NONE;
 
 		/*
 		SECTION 6:
@@ -144,7 +156,7 @@ public class GameEngine {
 		this.movePlayer();
 	}
 
-	public void updateProjectiles(){
+	public void updatePlayerProjectile(){
 		if(this.playerProjectile != null){
 			/*
 			NOTE:
@@ -168,6 +180,25 @@ public class GameEngine {
 					break;
 				}
 			}
+
+			/*
+			NOTE:
+				- Now we're checking if the player's projectile is colliding with 
+				an enemy.
+			 */
+			if(playerProjectile != null){
+				for(Alien alien : this.aliens){
+					if(this.playerProjectile.isColliding(alien)){
+						/*
+						NOTE:
+							- We do the same thing as we did for bunkers.
+						*/
+						this.removeRenderable(this.playerProjectile);
+						this.playerProjectile = null;
+						break;
+					}
+				}
+			}
 		}
 		
 		/*
@@ -188,6 +219,10 @@ public class GameEngine {
 				this.playerProjectile = null;
 			}
 		}
+	}
+
+	public void updateEnemyProjectile(){
+		
 	}
 
 	public void updateBunkers(){
@@ -220,6 +255,51 @@ public class GameEngine {
 		}
 	}
 
+	public void updateAliens(){
+		/*
+		NOTE:
+			- We move the aliens first.
+		 */
+		this.moveAliens();
+
+		/*
+		NOTE:
+			- We check if there are any aliens that need to be removed.
+		*/
+		List<Alien> removables = new ArrayList<Alien>();
+
+		boolean increaseSpeed = false;
+
+		for(Alien alien : this.aliens){
+			if(alien.getDeleteStatus()){
+
+				increaseSpeed = true;
+				this.removeRenderable(alien);
+				removables.add(alien);
+			}
+		}
+
+		for(Alien removable : removables){
+			/*
+			NOTE:
+				- Again, we don't want to run into a `ConcurrentModificationException`
+				so we need to remove it separately.
+			*/
+			this.aliens.remove(removable);
+		}
+
+		/*
+		NOTE:
+			- Now we increase all the alien's speeds if the player projectile has hit
+			one of the enemies.
+		*/
+		if(increaseSpeed){
+			for(Alien alien : this.aliens){
+				alien.increaseSpeed();
+			}
+		}
+	}
+
 	public void update(){
 		/*
 		NOTE: 
@@ -227,8 +307,9 @@ public class GameEngine {
 		*/
 
 		this.updatePlayer();
-		this.updateProjectiles();
+		this.updatePlayerProjectile();
 		this.updateBunkers();
+		this.updateAliens();
 
 		/*
 		NOTE:
@@ -341,6 +422,118 @@ public class GameEngine {
 
 		if(right){
 			player.right();
+		}
+	}
+
+	private void moveAliens(){
+		/*
+		NOTE:
+			- This is to be called in `updateAliens()`. 
+		*/
+
+		/*
+		NOTE:
+			- Initially, it is set to NONE because we don't know where the aliens
+			are set. 
+		*/
+		if(this.alienHerdDirection == Direction.NONE){
+			this.alienHerdDirection = Direction.LEFT;
+			//this.alienHerdDirection = Direction.RIGHT;
+		}
+
+		final int FRAMES_IN_ONE_SECOND = 60;
+		if(this.herdDescent){
+			/*
+			NOTE:
+				- Resetting the flag and not the counter. The counter we reset
+				at the end.
+			 */
+			this.frameCountDescend++;
+
+			if(this.frameCountDescend > FRAMES_IN_ONE_SECOND){
+				this.herdDescent = false;
+			}
+		}
+
+		/*
+		NOTE:
+			- Now we loop through the list of aliens.
+		*/
+		for(Alien alien : this.aliens){
+			final int windowMarginLeft = 1;
+			final int windowMarginRight = this.getWindowWidth() - 1;
+
+			if(this.herdDescent){
+				alien.down();
+				continue;
+			}
+
+			/*
+			NOTE:
+				- This is checking if there are any enemy objects hitting the
+				left or the right bound of the window. If there is, we set the
+				herd's direction accordingly.
+			 */
+
+			if(alien.getPosition().getX() <= windowMarginLeft){
+					/*
+					NOTE:
+						- We flag to let the whole herd descend towards the player for 
+						one second if the herd has hit the edge of the window.
+					*/
+
+					this.herdDescent = true;
+					this.alienHerdDirection = Direction.RIGHT;
+					break;
+
+			}else if(alien.getPosition().getX() + alien.getWidth() >= windowMarginRight){
+					/*
+					NOTE:
+						- Same thing here. We let the herd descend but our horizontal
+						direction changes.
+					*/
+
+					this.herdDescent = true;
+					this.alienHerdDirection = Direction.LEFT;
+					break;
+			}
+			
+			/*
+			NOTE:
+				- Switching directions.
+			*/
+			if(this.alienHerdDirection == Direction.LEFT){
+				alien.left();
+			}
+
+			if(this.alienHerdDirection == Direction.RIGHT){
+				alien.right();
+			}
+		}
+
+		/*
+		NOTE:
+			- Resetting the counter here.
+		 */
+
+		if(this.frameCountDescend > FRAMES_IN_ONE_SECOND){
+			this.frameCountDescend = 0;
+
+			/*
+			NOTE:
+				- This is a sort of a band-aid solution to get the aliens bounce off 
+				the margins a little bit. If this isn't here then the aliens will
+				keep on descending forever.
+			 */
+			for(Alien alien : this.aliens){
+				if(this.alienHerdDirection == Direction.LEFT){
+					alien.left();
+				}
+
+				if(this.alienHerdDirection == Direction.RIGHT){
+					alien.right();
+				}
+			}
 		}
 	}
 }
